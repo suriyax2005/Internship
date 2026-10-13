@@ -80,14 +80,16 @@ const apiLimiter = rateLimit({
 });
 app.use('/api', apiLimiter);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
+// Health check & root endpoint for Render
+app.get(['/', '/health'], (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Smart Rental SaaS Backend API is operational.',
+    version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
 });
+
 
 // API Routes mounting
 app.use('/api/v1/auth', authRoutes);
