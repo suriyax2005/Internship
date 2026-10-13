@@ -1,6 +1,15 @@
 import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables (supports running from repo root or backend folder)
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config();
+
 
 import app from './app.js';
 import { connectDB } from './config/db.js';

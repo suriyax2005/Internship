@@ -4,6 +4,11 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.resolve(__dirname, '../uploads');
 
 import authRoutes from './routes/authRoutes.js';
 import propertyRoutes from './routes/propertyRoutes.js';
@@ -23,6 +28,7 @@ const app = express();
 
 // Trust reverse proxy (Render, Railway, Heroku, AWS ELB, etc.) for secure cookies & rate limiting
 app.set('trust proxy', 1);
+
 
 // Security Helmet headers
 app.use(
@@ -60,7 +66,8 @@ app.use(cookieParser());
 app.use(mongoSanitize);
 
 // Static file serving for uploads
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(uploadsDir));
+
 
 // General API Rate Limiting
 const apiLimiter = rateLimit({
