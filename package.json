@@ -1,0 +1,32 @@
+{
+  "name": "smart-rental-property-tenant-management-saas",
+  "version": "1.0.0",
+  "description": "Smart Rental Property & Tenant Management SaaS Application",
+  "main": "backend/src/server.js",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "seed": "npm run seed --prefix backend",
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend"
+  },
+  "keywords": [
+    "saas",
+    "property-management",
+    "tenant-management",
+    "real-estate",
+    "mern",
+    "react",
+    "nodejs"
+  ],
+  "author": "Smart Rental SaaS Team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "framer-motion": "^14.0.0",
+    "lucide-react": "^1.51.0"
+  }
+}

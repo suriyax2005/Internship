@@ -1,0 +1,437 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   PREMIUM DESIGN SYSTEM — BASE
+   ============================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply transition-colors duration-300;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Premium heading font */
+  h1, h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITIES
+   ============================================ */
+.glass-panel {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-700/30 shadow-glass;
+}
+
+.glass-card {
+  @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border border-slate-200/50 dark:border-slate-700/30 shadow-glass hover:shadow-glass-lg transition-all duration-500;
+}
+
+.glass-card-premium {
+  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/40 dark:border-slate-700/20;
+  box-shadow:
+    0 20px 60px -15px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
+.glass-card-premium:hover {
+  box-shadow:
+    0 25px 70px -15px rgba(0, 0, 0, 0.12),
+    0 0 40px rgba(51, 102, 255, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  transform: translateY(-2px);
+}
+
+.glass-navbar {
+  @apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-2xl border-b border-white/20 dark:border-slate-700/20;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+.glass-sidebar {
+  @apply bg-white/80 dark:bg-slate-900/90 backdrop-blur-2xl border-r border-slate-200/40 dark:border-slate-700/20;
+}
+
+/* ============================================
+   PREMIUM GRADIENT & GLOW EFFECTS
+   ============================================ */
+.gradient-text-brand {
+  @apply text-transparent bg-clip-text;
+  background-image: linear-gradient(135deg, #3366ff 0%, #7C3AED 50%, #06B6D4 100%);
+}
+
+.gradient-text-gold {
+  @apply text-transparent bg-clip-text;
+  background-image: linear-gradient(135deg, #D4AF37 0%, #F5D76E 50%, #D4AF37 100%);
+}
+
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(51,102,255,0.3), rgba(124,58,237,0.2), rgba(6,182,212,0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glow-brand {
+  box-shadow: 0 0 60px rgba(51, 102, 255, 0.12), 0 0 20px rgba(51, 102, 255, 0.08);
+}
+
+.glow-gold {
+  box-shadow: 0 0 60px rgba(212, 175, 55, 0.1), 0 0 20px rgba(212, 175, 55, 0.06);
+}
+
+/* ============================================
+   PREMIUM BUTTON STYLES
+   ============================================ */
+.btn-premium {
+  @apply relative overflow-hidden px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300;
+  background: linear-gradient(135deg, #3366ff 0%, #1a46f5 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(51, 102, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(51, 102, 255, 0.35), 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.btn-premium::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-premium:hover::after {
+  left: 100%;
+}
+
+.btn-glass {
+  @apply px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  color: white;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   PREMIUM SCROLLBARS
+   ============================================ */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/60 dark:bg-slate-700/60 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400/80 dark:bg-slate-600/80;
+}
+
+/* ============================================
+   AUTH PAGE ANIMATIONS & UTILITIES
+   ============================================ */
+@keyframes auth-card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-card-enter {
+  animation: auth-card-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.fade-in-up-delay-1 { animation-delay: 0.08s; }
+.fade-in-up-delay-2 { animation-delay: 0.16s; }
+.fade-in-up-delay-3 { animation-delay: 0.24s; }
+.fade-in-up-delay-4 { animation-delay: 0.32s; }
+.fade-in-up-delay-5 { animation-delay: 0.40s; }
+.fade-in-up-delay-6 { animation-delay: 0.48s; }
+
+@keyframes float-orb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  50% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
+  75% {
+    transform: translate(15px, 25px) scale(1.02);
+  }
+}
+
+.animate-float-orb {
+  animation: float-orb 20s ease-in-out infinite;
+}
+
+.animate-float-orb-reverse {
+  animation: float-orb 25s ease-in-out infinite reverse;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.auth-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes auth-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.auth-spinner {
+  animation: auth-spin 0.8s linear infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Password strength meter colors */
+.strength-weak {
+  @apply bg-red-500;
+  width: 20%;
+}
+
+.strength-fair {
+  @apply bg-orange-500;
+  width: 40%;
+}
+
+.strength-good {
+  @apply bg-yellow-500;
+  width: 60%;
+}
+
+.strength-strong {
+  @apply bg-emerald-500;
+  width: 80%;
+}
+
+.strength-excellent {
+  @apply bg-emerald-400;
+  width: 100%;
+}
+
+/* Auth input focus glow */
+.auth-input-glow:focus-within {
+  box-shadow: 0 0 0 3px rgba(51, 102, 255, 0.12);
+}
+
+/* Illustration panel mesh gradient */
+@keyframes mesh-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.auth-mesh-gradient {
+  background: linear-gradient(-45deg, #0c1222, #1a2744, #121c57, #0c1222);
+  background-size: 400% 400%;
+  animation: mesh-shift 15s ease infinite;
+}
+
+/* Feature card hover */
+.auth-feature-card {
+  @apply transition-all duration-300;
+}
+
+.auth-feature-card:hover {
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   PREMIUM STAT CARD SHIMMER
+   ============================================ */
+@keyframes stat-shimmer {
+  0% {
+    transform: translateX(-100%) rotate(15deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(15deg);
+  }
+}
+
+.stat-card-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  transform: rotate(15deg);
+  animation: stat-shimmer 4s ease-in-out infinite;
+}
+
+/* ============================================
+   SIDEBAR ACTIVE LINK INDICATOR
+   ============================================ */
+.sidebar-link-active {
+  position: relative;
+}
+
+.sidebar-link-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #3366ff, #7C3AED);
+}
+
+/* ============================================
+   PREMIUM MODAL OVERLAY
+   ============================================ */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  @apply bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl;
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+/* ============================================
+   PREMIUM NOTIFICATION DOT
+   ============================================ */
+@keyframes notification-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+}
+
+.notification-dot {
+  animation: notification-pulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   PREMIUM LOADING SKELETON
+   ============================================ */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.skeleton {
+  @apply bg-slate-200 dark:bg-slate-800 rounded-lg;
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
