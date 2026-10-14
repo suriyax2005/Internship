@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, clearAuthError } from '../../store/slices/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, ShieldCheck, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,6 @@ export const Login = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors, isValid },
   } = useForm({ mode: 'onChange' });
@@ -30,25 +29,24 @@ export const Login = () => {
 
   // Real-time email validation
   const validateEmail = useCallback((value) => {
-    if (!value) return 'Email address is required';
-    if (/\s/.test(value)) return 'Email cannot contain spaces';
+    if (!value || !value.trim()) return 'Email address is required';
+    const trimmed = value.trim();
+    if (/\s/.test(trimmed)) return 'Email cannot contain spaces';
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(value)) return 'Please enter a valid email address';
-    if (/@@/.test(value)) return 'Invalid email — double @ detected';
-    // Gmail-specific validation
-    if (value.toLowerCase().endsWith('@gmail.com')) {
-      const localPart = value.split('@')[0];
-      if (/\.\./.test(localPart)) return 'Gmail addresses cannot have consecutive dots';
-      if (localPart.startsWith('.') || localPart.endsWith('.')) return 'Gmail local part cannot start or end with a dot';
-    }
+    if (!emailRegex.test(trimmed)) return 'Please enter a valid email address';
+    if (/@@/.test(trimmed)) return 'Please enter a valid email address';
     return true;
   }, []);
 
   const onSubmit = async (data) => {
-    if (isSubmitting) return;
+    if (isSubmitting || loading) return;
     setIsSubmitting(true);
     try {
-      const res = await dispatch(loginUser(data));
+      const payload = {
+        ...data,
+        email: data.email?.trim(),
+      };
+      const res = await dispatch(loginUser(payload));
       if (loginUser.fulfilled.match(res)) {
         const role = res.payload.user.role;
         if (role === 'TENANT') {
@@ -60,11 +58,6 @@ export const Login = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const setDemoCredentials = (email, password) => {
-    setValue('email', email, { shouldValidate: true });
-    setValue('password', password, { shouldValidate: true });
   };
 
   const isFormReady = emailValue && passwordValue && !errors.email && !errors.password;
@@ -89,36 +82,10 @@ export const Login = () => {
         </div>
       )}
 
-      {/* Demo credentials */}
-      <div className="p-3.5 bg-slate-800/50 rounded-xl border border-slate-700/50 space-y-2.5 fade-in-up fade-in-up-delay-1">
-        <div className="flex items-center space-x-2 text-xs font-semibold text-brand-400">
-          <ShieldCheck className="w-4 h-4" />
-          <span>Quick Demo Access</span>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setDemoCredentials('landlord@example.com', 'Password123!')}
-            className="group px-3 py-2 bg-slate-700/60 hover:bg-slate-700 text-white text-xs font-medium rounded-lg transition-all duration-200 text-center border border-transparent hover:border-brand-500/30"
-            aria-label="Fill landlord demo credentials"
-          >
-            <span className="block text-[11px] text-slate-400 group-hover:text-brand-400 transition-colors">Landlord</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setDemoCredentials('tenant@example.com', 'Password123!')}
-            className="group px-3 py-2 bg-slate-700/60 hover:bg-slate-700 text-white text-xs font-medium rounded-lg transition-all duration-200 text-center border border-transparent hover:border-brand-500/30"
-            aria-label="Fill tenant demo credentials"
-          >
-            <span className="block text-[11px] text-slate-400 group-hover:text-brand-400 transition-colors">Tenant</span>
-          </button>
-        </div>
-      </div>
-
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         {/* Email */}
-        <div className="fade-in-up fade-in-up-delay-2">
+        <div className="fade-in-up fade-in-up-delay-1">
           <label htmlFor="login-email" className="block text-xs font-semibold text-slate-300 mb-1.5">
             Email Address
           </label>
@@ -127,6 +94,7 @@ export const Login = () => {
             <input
               id="login-email"
               type="email"
+              required
               autoComplete="email"
               {...register('email', {
                 validate: validateEmail,
@@ -150,7 +118,7 @@ export const Login = () => {
         </div>
 
         {/* Password */}
-        <div className="fade-in-up fade-in-up-delay-3">
+        <div className="fade-in-up fade-in-up-delay-2">
           <div className="flex items-center justify-between mb-1.5">
             <label htmlFor="login-password" className="text-xs font-semibold text-slate-300">
               Password
@@ -168,6 +136,7 @@ export const Login = () => {
             <input
               id="login-password"
               type={showPassword ? 'text' : 'password'}
+              required
               autoComplete="current-password"
               {...register('password', { required: 'Password is required' })}
               placeholder="Enter your password"
@@ -194,7 +163,7 @@ export const Login = () => {
         </div>
 
         {/* Remember Me */}
-        <div className="flex items-center fade-in-up fade-in-up-delay-4">
+        <div className="flex items-center fade-in-up fade-in-up-delay-3">
           <label className="flex items-center cursor-pointer group" htmlFor="remember-me">
             <input
               type="checkbox"
@@ -228,7 +197,7 @@ export const Login = () => {
         <button
           type="submit"
           disabled={loading || isSubmitting || !isFormReady}
-          className="w-full py-3 bg-gradient-to-r from-brand-500 to-emerald-500 hover:from-brand-600 hover:to-emerald-600 active:from-brand-700 active:to-emerald-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-brand-500/25 fade-in-up fade-in-up-delay-5"
+          className="w-full py-3 bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-brand-600/25 hover:shadow-brand-500/40 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-brand-600/25 fade-in-up fade-in-up-delay-4"
           aria-label="Sign in to your account"
         >
           {(loading || isSubmitting) ? (

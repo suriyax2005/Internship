@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser, clearAuthError, clearAuth } from '../../store/slices/authSlice';
+import { registerUser, clearAuthError } from '../../store/slices/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   User,
@@ -14,7 +14,6 @@ import {
   AlertCircle,
   Check,
   X,
-  ShieldCheck,
   ChevronDown,
 } from 'lucide-react';
 
@@ -67,11 +66,17 @@ export const Register = () => {
   const {
     register,
     handleSubmit,
+    setError,
     watch,
     formState: { errors },
   } = useForm({
-    mode: 'onChange',
+    mode: 'onTouched',
+    reValidateMode: 'onChange',
     defaultValues: {
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
       role: 'LANDLORD',
     },
   });
@@ -96,32 +101,64 @@ export const Register = () => {
   const passwordsMatch = confirmPasswordValue.length > 0 && passwordValue === confirmPasswordValue;
   const passwordsMismatch = confirmPasswordValue.length > 0 && passwordValue !== confirmPasswordValue;
 
-  /* Email validation */
+  /* Email validation function matching Section 5 specifications */
   const validateEmail = useCallback((value) => {
-    if (!value) return 'Email address is required';
+    if (!value || typeof value !== 'string' || value.trim() === '') {
+      return 'Email address is required.';
+    }
     const trimmed = value.trim();
-    if (/\s/.test(trimmed)) return 'Email cannot contain spaces';
-    if (/@@/.test(trimmed)) return 'Invalid email — double @ detected';
-    if (trimmed.startsWith('@')) return 'Email cannot start with @';
-    if (trimmed.endsWith('@')) return 'Please provide a domain after @';
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(trimmed)) return 'Please enter a valid email address';
-
-    // Gmail-specific checks
-    if (trimmed.toLowerCase().endsWith('@gmail.com')) {
-      const localPart = trimmed.split('@')[0];
-      if (/\.\./.test(localPart)) return 'Gmail addresses cannot have consecutive dots';
-      if (localPart.startsWith('.') || localPart.endsWith('.'))
-        return 'Gmail addresses cannot start or end with a dot';
-      if (localPart.length === 0) return 'Gmail username cannot be empty';
+    // Check for internal whitespace
+    if (/\s/.test(trimmed)) {
+      return 'Please enter a valid email address.';
     }
 
-    // Domain validation
-    const domain = trimmed.split('@')[1];
-    if (domain) {
-      if (domain.startsWith('.') || domain.endsWith('.')) return 'Invalid email domain';
-      if (/\.\./.test(domain)) return 'Invalid email domain — consecutive dots';
+    // Must have exactly one @ separating local and domain
+    const atParts = trimmed.split('@');
+    if (atParts.length !== 2) {
+      return 'Please enter a valid email address.';
+    }
+
+    const [local, domain] = atParts;
+    if (!local || !domain) {
+      return 'Please enter a valid email address.';
+    }
+
+    // Local part constraints: cannot start/end with dot, no consecutive dots
+    if (local.startsWith('.') || local.endsWith('.') || local.includes('..')) {
+      return 'Please enter a valid email address.';
+    }
+
+    // Domain constraints: must contain dot, cannot start/end with dot or hyphen, no consecutive dots
+    if (
+      !domain.includes('.') ||
+      domain.startsWith('.') ||
+      domain.endsWith('.') ||
+      domain.startsWith('-') ||
+      domain.endsWith('-') ||
+      domain.includes('..')
+    ) {
+      return 'Please enter a valid email address.';
+    }
+
+    // Domain parts validation
+    const domainLabels = domain.split('.');
+    for (const label of domainLabels) {
+      if (!label || label.startsWith('-') || label.endsWith('-')) {
+        return 'Please enter a valid email address.';
+      }
+    }
+
+    // TLD must be at least 2 alpha characters
+    const tld = domainLabels[domainLabels.length - 1];
+    if (!/^[a-zA-Z]{2,}$/.test(tld)) {
+      return 'Please enter a valid email address.';
+    }
+
+    // Standard RFC compliant email regex check
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    if (!emailRegex.test(trimmed)) {
+      return 'Please enter a valid email address.';
     }
 
     return true;
@@ -140,10 +177,23 @@ export const Register = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    if (isSubmitting) return;
+    if (isSubmitting || loading) return;
+
+    // Strict frontend validation check before calling registration API
+    const trimmedEmail = (data.email || '').trim();
+    const emailCheck = validateEmail(trimmedEmail);
+    if (emailCheck !== true) {
+      setError('email', { type: 'manual', message: emailCheck });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { confirmPassword, ...submitData } = data;
+      // Trim email and full name before sending payload
+      submitData.email = trimmedEmail;
+      submitData.fullName = submitData.fullName?.trim();
+
       const res = await dispatch(registerUser(submitData));
       if (registerUser.fulfilled.match(res)) {
         if (data.role === 'TENANT') {
@@ -156,6 +206,8 @@ export const Register = () => {
       setIsSubmitting(false);
     }
   };
+
+  const isEmailValid = emailValue && emailValue.trim() && !errors.email && validateEmail(emailValue) === true;
 
   return (
     <div className="space-y-5">
@@ -199,6 +251,7 @@ export const Register = () => {
             <input
               id="reg-fullname"
               type="text"
+              required
               autoComplete="name"
               {...register('fullName', {
                 required: 'Full name is required',
@@ -228,7 +281,7 @@ export const Register = () => {
           )}
         </div>
 
-        {/* Email */}
+        {/* Email Address - Mandatory Email Validation Module */}
         <div className="fade-in-up fade-in-up-delay-2">
           <label htmlFor="reg-email" className="block text-xs font-semibold text-slate-300 mb-1.5">
             Email Address
@@ -245,34 +298,46 @@ export const Register = () => {
             <input
               id="reg-email"
               type="email"
+              required
               autoComplete="email"
               {...register('email', {
+                required: 'Email address is required.',
                 validate: validateEmail,
               })}
               placeholder="name@example.com"
-              className="w-full pl-11 pr-10 py-3 bg-slate-800/80 border border-slate-700/80 focus:border-brand-500 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-0 transition-all duration-200"
-              aria-describedby={errors.email ? 'reg-email-error' : undefined}
+              className={`w-full pl-11 pr-10 py-3 bg-slate-800/80 border rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-0 transition-all duration-200 ${
+                errors.email
+                  ? 'border-red-500 focus:border-red-500'
+                  : isEmailValid
+                  ? 'border-emerald-500/70 focus:border-emerald-500'
+                  : 'border-slate-700/80 focus:border-brand-500'
+              }`}
+              aria-describedby={errors.email ? 'reg-email-error' : isEmailValid ? 'reg-email-valid' : undefined}
               aria-invalid={!!errors.email}
+              aria-required="true"
             />
-            {emailValue && !errors.email && (
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-brand-400 text-sm" aria-hidden="true">
+            {isEmailValid && (
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-400 text-sm font-bold pointer-events-none" aria-hidden="true">
                 ✓
               </span>
             )}
           </div>
+          {/* Inline Email Error Message */}
           {errors.email && (
             <p
               id="reg-email-error"
-              className="flex items-center space-x-1 text-xs text-red-400 mt-1.5"
+              className="flex items-center space-x-1.5 text-xs text-red-400 mt-1.5 font-medium"
               role="alert"
+              aria-live="polite"
             >
-              <AlertCircle className="w-3 h-3 shrink-0" />
+              <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-400" />
               <span>{errors.email.message}</span>
             </p>
           )}
-          {emailValue && !errors.email && (
-            <p className="flex items-center space-x-1 text-xs text-brand-400 mt-1.5">
-              <Check className="w-3 h-3" />
+          {/* Inline Email Success Message */}
+          {isEmailValid && (
+            <p id="reg-email-valid" className="flex items-center space-x-1.5 text-xs text-emerald-400 mt-1.5 font-medium" role="status">
+              <Check className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
               <span>Valid email address</span>
             </p>
           )}
@@ -317,6 +382,7 @@ export const Register = () => {
             <input
               id="reg-password"
               type={showPassword ? 'text' : 'password'}
+              required
               autoComplete="new-password"
               {...register('password', {
                 validate: validatePassword,
@@ -396,6 +462,7 @@ export const Register = () => {
             <input
               id="reg-confirm-password"
               type={showConfirmPassword ? 'text' : 'password'}
+              required
               autoComplete="new-password"
               {...register('confirmPassword', {
                 required: 'Please confirm your password',
@@ -456,7 +523,7 @@ export const Register = () => {
         <button
           type="submit"
           disabled={loading || isSubmitting}
-          className="w-full py-3 bg-gradient-to-r from-brand-500 to-emerald-500 hover:from-brand-600 hover:to-emerald-600 active:from-brand-700 active:to-emerald-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-brand-500/25 fade-in-up fade-in-up-delay-5"
+          className="w-full py-3 bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-brand-600/25 hover:shadow-brand-500/40 transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-brand-600/25 fade-in-up fade-in-up-delay-5"
           aria-label="Create your account"
         >
           {loading || isSubmitting ? (
