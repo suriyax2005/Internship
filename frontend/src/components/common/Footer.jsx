@@ -15,8 +15,6 @@ export const Footer = () => {
         </div>
 
         <div className="flex items-center space-x-1 text-[11px] text-slate-400 dark:text-slate-500">
-          <span>Crafted with</span>
-          <Heart className="w-3 h-3 text-rose-400 fill-rose-400" />
           <span>for modern landlords</span>
         </div>
       </div>
