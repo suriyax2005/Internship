@@ -1,7 +1,7 @@
 services:
   # Backend Web Service
   - type: web
-    name: smart-rental-backend
+    name: dwellora-backend
     runtime: node
     plan: free
     rootDir: backend
@@ -24,11 +24,11 @@ services:
       - key: JWT_REFRESH_EXPIRY
         value: 7d
       - key: CORS_ORIGIN
-        sync: false
+        value: https://dwellora-frontend.onrender.com
 
   # Frontend Static Site
   - type: web
-    name: smart-rental-frontend
+    name: dwellora-frontend
     runtime: static
     plan: free
     rootDir: frontend
@@ -40,6 +40,6 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://smart-rental-backend.onrender.com/api/v1
+        value: https://dwellora-backend.onrender.com/api/v1
       - key: VITE_SOCKET_URL
-        value: https://smart-rental-backend.onrender.com
+        value: https://dwellora-backend.onrender.com

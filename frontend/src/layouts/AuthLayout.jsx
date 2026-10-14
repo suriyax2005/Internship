@@ -55,7 +55,7 @@ export const AuthLayout = () => {
                 <Building2 className="w-5 h-5" />
               </div>
               <span className="text-xl font-extrabold text-white tracking-tight">
-                Smart Rental <span className="text-brand-400">SaaS</span>
+                Dwellora
               </span>
             </Link>
           </div>
@@ -64,13 +64,13 @@ export const AuthLayout = () => {
           <div className="space-y-8">
             <div className="space-y-3">
               <h1 className="text-3xl xl:text-4xl font-black text-white leading-tight tracking-tight">
-                The modern way to<br />
+                Every property.<br />
                 <span className="bg-gradient-to-r from-brand-400 to-emerald-400 bg-clip-text text-transparent">
-                  manage properties
+                  Every tenant. One place.
                 </span>
               </h1>
               <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-                Join thousands of property managers who streamline operations, automate rent collection, and delight tenants — all from one platform.
+                Streamline operations, automate rent collection, track leases, and delight tenants — all within Dwellora.
               </p>
             </div>
 
@@ -93,7 +93,7 @@ export const AuthLayout = () => {
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.05]">
               <p className="text-slate-300 text-xs leading-relaxed italic">
-                "Smart Rental SaaS transformed how we manage our 200+ unit portfolio. Rent collection is now automated, maintenance requests are tracked in real-time, and our tenants love the self-service portal."
+                "Dwellora transformed how we manage our 200+ unit portfolio. Rent collection is now automated, maintenance requests are tracked in real-time, and our tenants love the self-service portal."
               </p>
               <div className="flex items-center space-x-3 mt-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-emerald-400 flex items-center justify-center text-white text-xs font-bold">
@@ -106,7 +106,7 @@ export const AuthLayout = () => {
               </div>
             </div>
             <p className="text-slate-600 text-[10px]">
-              © {new Date().getFullYear()} Smart Rental SaaS. All rights reserved.
+              © {new Date().getFullYear()} Dwellora. All rights reserved.
             </p>
           </div>
         </div>
@@ -121,7 +121,7 @@ export const AuthLayout = () => {
               <Building2 className="w-5 h-5" />
             </div>
             <span className="text-lg font-extrabold text-white tracking-tight">
-              Smart Rental <span className="text-brand-400">SaaS</span>
+              Dwellora
             </span>
           </Link>
         </div>
@@ -136,7 +136,7 @@ export const AuthLayout = () => {
 
             {/* Mobile footer */}
             <p className="lg:hidden text-center text-[10px] text-slate-600 mt-6">
-              © {new Date().getFullYear()} Smart Rental SaaS. All rights reserved.
+              © {new Date().getFullYear()} Dwellora. All rights reserved.
             </p>
           </div>
         </div>

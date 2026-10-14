@@ -100,7 +100,7 @@ export const authService = {
     const resetUrl = `${process.env.CORS_ORIGIN || 'http://localhost:5173'}/reset-password/${resetToken}`;
     await sendEmail({
       to: user.email,
-      subject: 'Password Reset Request - Smart Rental SaaS',
+      subject: 'Password Reset Request - Dwellora',
       html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 30 minutes.</p>`,
       text: `Reset your password here: ${resetUrl}`,
     });
