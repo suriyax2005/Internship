@@ -2,7 +2,7 @@ import { userRepository } from '../repositories/userRepository.js';
 import { User } from '../models/User.js';
 import { ApiError } from '../utils/apiError.js';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwtUtils.js';
-import { sendEmail } from '../config/mailer.js';
+import { sendEmail, sendVerificationEmail } from '../config/mailer.js';
 import crypto from 'crypto';
 
 export const authService = {
@@ -18,6 +18,7 @@ export const authService = {
       password,
       phone,
       role: role || 'LANDLORD',
+      isEmailVerified: true,
     });
 
     const accessToken = generateAccessToken(user);
@@ -30,7 +31,30 @@ export const authService = {
     delete userObj.password;
     delete userObj.refreshToken;
 
-    return { user: userObj, accessToken, refreshToken };
+    return {
+      user: userObj,
+      accessToken,
+      refreshToken,
+      message: 'Account created and registered successfully!',
+    };
+  },
+
+  verifyEmail: async () => {
+    return {
+      message: 'Email verification is not required. All accounts are automatically active.',
+    };
+  },
+
+  devVerifyEmail: async () => {
+    return {
+      message: 'Email verification is disabled.',
+    };
+  },
+
+  resendVerificationEmail: async () => {
+    return {
+      message: 'Email verification is disabled. You can log in directly.',
+    };
   },
 
   login: async ({ email, password }) => {

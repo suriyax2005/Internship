@@ -10,6 +10,7 @@ import { Login } from '../pages/public/Login';
 import { Register } from '../pages/public/Register';
 import { ForgotPassword } from '../pages/public/ForgotPassword';
 import { ResetPassword } from '../pages/public/ResetPassword';
+import { VerifyEmail } from '../pages/public/VerifyEmail';
 
 // Landlord Pages
 import { Dashboard } from '../pages/landlord/Dashboard';
@@ -41,6 +42,8 @@ export const AppRoutes = () => {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/verify-email/:token" element={<Navigate to="/dashboard" replace />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Route>

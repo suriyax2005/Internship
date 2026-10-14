@@ -9,6 +9,9 @@ import {
   forgotPassword,
   resetPassword,
   changePassword,
+  verifyEmail,
+  resendVerification,
+  devVerify,
 } from '../controllers/authController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 import { validateRequest } from '../middleware/validateMiddleware.js';
@@ -24,6 +27,10 @@ import {
 const router = express.Router();
 
 router.post('/register', registerValidator, validateRequest, register);
+router.get('/verify-email/:token', verifyEmail);
+router.post('/verify-email', verifyEmail);
+router.post('/resend-verification', resendVerification);
+router.post('/dev-verify', devVerify);
 router.post('/login', loginValidator, validateRequest, login);
 router.post('/logout', authenticate, logout);
 router.post('/refresh-token', refreshToken);

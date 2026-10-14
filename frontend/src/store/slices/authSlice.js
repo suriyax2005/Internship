@@ -26,13 +26,45 @@ export const registerUser = createAsyncThunk('auth/register', async (userData, {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     const response = await api.post('/auth/register', userData);
-    const { user, accessToken } = response.data.data;
+    const data = response.data.data;
+
+    const { user, accessToken } = data;
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', accessToken);
-    toast.success('Registration successful!');
+    toast.success('Registration successful! Welcome to Dwellora.');
     return { user, token: accessToken };
   } catch (error) {
     const msg = error.response?.data?.message || 'Registration failed';
+    toast.error(msg);
+    return rejectWithValue(msg);
+  }
+});
+
+export const verifyEmailToken = createAsyncThunk('auth/verifyEmailToken', async (token, { rejectWithValue }) => {
+  try {
+    const response = await api.post('/auth/verify-email', { token });
+    const { user, accessToken } = response.data.data;
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', accessToken);
+    toast.success('Email verified successfully! Welcome to Dwellora.');
+    return { user, token: accessToken };
+  } catch (error) {
+    const msg = error.response?.data?.message || 'Email verification failed or link expired.';
+    toast.error(msg);
+    return rejectWithValue(msg);
+  }
+});
+
+export const devVerifyUser = createAsyncThunk('auth/devVerifyUser', async (email, { rejectWithValue }) => {
+  try {
+    const response = await api.post('/auth/dev-verify', { email });
+    const { user, accessToken } = response.data.data;
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', accessToken);
+    toast.success('Email verified successfully! Welcome to Dwellora.');
+    return { user, token: accessToken };
+  } catch (error) {
+    const msg = error.response?.data?.message || 'Dev verification failed.';
     toast.error(msg);
     return rejectWithValue(msg);
   }
@@ -122,6 +154,36 @@ const authSlice = createSlice({
         state.token = action.payload.token;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Verify Email Token
+      .addCase(verifyEmailToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyEmailToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+      })
+      .addCase(verifyEmailToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Dev Verify User
+      .addCase(devVerifyUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(devVerifyUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+      })
+      .addCase(devVerifyUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

@@ -15,9 +15,51 @@ export const register = async (req, res, next) => {
   try {
     const result = await authService.register(req.body);
 
-    res.cookie('refreshToken', result.refreshToken, getCookieOptions());
+    if (result.refreshToken) {
+      res.cookie('refreshToken', result.refreshToken, getCookieOptions());
+    }
 
-    return ApiResponse.success(res, 'User registered successfully', result, 201);
+    return ApiResponse.success(res, result.message || 'User registered successfully', result, 201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const token = req.params.token || req.query.token || req.body.token;
+    const result = await authService.verifyEmail(token);
+
+    if (result.refreshToken) {
+      res.cookie('refreshToken', result.refreshToken, getCookieOptions());
+    }
+
+    return ApiResponse.success(res, result.message || 'Email verified successfully', result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resendVerification = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const result = await authService.resendVerificationEmail(email);
+    return ApiResponse.success(res, result.message, result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const devVerify = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const result = await authService.devVerifyEmail(email);
+
+    if (result.refreshToken) {
+      res.cookie('refreshToken', result.refreshToken, getCookieOptions());
+    }
+
+    return ApiResponse.success(res, result.message, result);
   } catch (error) {
     next(error);
   }

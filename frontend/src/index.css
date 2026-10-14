@@ -229,6 +229,110 @@
     linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
 }
 
+/* ─────────── PASSWORD STRENGTH BAR ─────────── */
+.strength-weak {
+  width: 20%;
+  background: linear-gradient(90deg, #EF4444, #F87171);
+}
+
+.strength-fair {
+  width: 40%;
+  background: linear-gradient(90deg, #F97316, #FB923C);
+}
+
+.strength-good {
+  width: 60%;
+  background: linear-gradient(90deg, #EAB308, #FACC15);
+}
+
+.strength-strong {
+  width: 80%;
+  background: linear-gradient(90deg, #22C55E, #4ADE80);
+}
+
+.strength-excellent {
+  width: 100%;
+  background: linear-gradient(90deg, #10B981, #34D399);
+}
+
+/* ─────────── AUTH INPUT GLOW ─────────── */
+.auth-input-glow:focus-within {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ─────────── AUTH CARD ENTER ANIMATION ─────────── */
+.auth-card-enter {
+  animation: auth-card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes auth-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─────────── AUTH SPINNER ─────────── */
+.auth-spinner {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ─────────── FADE IN UP DELAYS ─────────── */
+.fade-in-up {
+  animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fade-in-up-delay-1 { animation-delay: 0.05s; }
+.fade-in-up-delay-2 { animation-delay: 0.1s; }
+.fade-in-up-delay-3 { animation-delay: 0.15s; }
+.fade-in-up-delay-4 { animation-delay: 0.2s; }
+.fade-in-up-delay-5 { animation-delay: 0.25s; }
+.fade-in-up-delay-6 { animation-delay: 0.3s; }
+
+/* ─────────── BTN PREMIUM (Navbar Get Started) ─────────── */
+.btn-premium {
+  @apply px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-brand-600/20 transition-all duration-300;
+}
+.btn-premium:hover {
+  @apply -translate-y-0.5 shadow-xl shadow-brand-600/30;
+}
+
+/* ─────────── BTN GLASS (CTA secondary button) ─────────── */
+.btn-glass {
+  @apply px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/40 text-white rounded-2xl text-sm font-semibold backdrop-blur-sm transition-all duration-300;
+}
+
+/* ─────────── AUTH FEATURE CARD ─────────── */
+.auth-feature-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.auth-feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* ─────────── FLOAT ORB ANIMATIONS ─────────── */
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(-20px) translateX(10px); }
+  66%       { transform: translateY(10px) translateX(-10px); }
+}
+@keyframes float-orb-reverse {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33%       { transform: translateY(15px) translateX(-8px); }
+  66%       { transform: translateY(-10px) translateX(12px); }
+}
+.animate-float-orb         { animation: float-orb 12s ease-in-out infinite; }
+.animate-float-orb-reverse { animation: float-orb-reverse 14s ease-in-out infinite; }
+
 /* ─────────── PRINT STYLES ─────────── */
 @media print {
   .no-print { display: none !important; }

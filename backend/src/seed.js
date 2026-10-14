@@ -37,6 +37,7 @@ const seedData = async () => {
       password: 'Password123!',
       phone: '+1 (555) 000-1111',
       role: ROLES.SUPER_ADMIN,
+      isEmailVerified: true,
     });
 
     // 2. Landlord 1
@@ -46,6 +47,7 @@ const seedData = async () => {
       password: 'Password123!',
       phone: '+1 (555) 234-5678',
       role: ROLES.LANDLORD,
+      isEmailVerified: true,
     });
     landlord1.tenantId = landlord1._id;
     await landlord1.save();
@@ -57,6 +59,7 @@ const seedData = async () => {
       password: 'Password123!',
       phone: '+1 (555) 987-6543',
       role: ROLES.LANDLORD,
+      isEmailVerified: true,
     });
     landlord2.tenantId = landlord2._id;
     await landlord2.save();
@@ -69,6 +72,7 @@ const seedData = async () => {
       phone: '+1 (555) 111-2222',
       role: ROLES.TENANT,
       tenantId: landlord1._id,
+      isEmailVerified: true,
     });
 
     const tenantUser2 = await User.create({
@@ -78,6 +82,7 @@ const seedData = async () => {
       phone: '+1 (555) 333-4444',
       role: ROLES.TENANT,
       tenantId: landlord1._id,
+      isEmailVerified: true,
     });
 
     logger.info('Seeding properties...');
